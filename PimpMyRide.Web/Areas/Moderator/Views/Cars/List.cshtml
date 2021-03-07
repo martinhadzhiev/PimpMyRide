@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ModeratorCarListModel>
+@{
+    ViewData["Title"] = "Review added cars";
+}
+
+<h3 class="text-center">@ViewData["Title"]</h3>
+<hr />
+
+@if (TempData.Keys.Contains(WebConstants.TempDataErrorMessageKey))
+{
+    <div class="well well-sm text-center" style="color: red">@TempData[WebConstants.TempDataErrorMessageKey]</div>
+}
+
+@if (TempData.Keys.Contains(WebConstants.TempDataSuccessMessageKey))
+{
+    <div class="well well-sm text-center" style="color: green">@TempData[WebConstants.TempDataSuccessMessageKey]</div>
+}
+
+<div class="row">
+    @if (Model.Any())
+    {
+        foreach (var car in Model)
+        {
+            <div style="margin-top: 15px; margin-bottom: 15px;" class=" col-md-6">
+                <a asp-area="Moderator"
+                   asp-controller="Cars" asp-action="Details"
+                   asp-route-id="@car.Id">
+                    <div class="col-md-5">
+                        @if (car.Picture == null)
+                        {
+                            <img src="~/images/noImage.jpg" height="130" width="190" />
+                        }
+                        else
+                        {
+                            <img src="@car.Picture" height="130" width="190" />
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        <h4>@car.Make</h4>
+                        <h4>@car.Model</h4>
+                        <h4>@car.Added.ToShortDateString()</h4>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <br />
+                        <a asp-area="Moderator"
+                           asp-controller="Cars"
+                           asp-action="Approve"
+                           asp-all-route-data="@(new Dictionary<string, string> {{"id", @car.Id.ToString()}})"
+                           class="btn btn-sm btn-success">
+                            Approve
+                        </a>
+                        <a asp-area="Moderator"
+                           asp-controller="Cars"
+                           asp-action="Delete"
+                           asp-all-route-data="@(new Dictionary<string, string> {{"id", @car.Id.ToString()}})"
+                           class="btn btn-sm btn-danger">
+                            Delete
+                        </a>
+                    </div>
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <h4 class="text-center">There are no cars waiting for approval.</h4>
+    }
+</div>

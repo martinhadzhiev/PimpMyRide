@@ -1,0 +1,62 @@
+﻿@model IEnumerable<UserListModel>
+@{
+    ViewData["Title"] = "All Users";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.FullName</td>
+                <td>
+                    @(user.Roles.Any()
+                                                                                          ? string.Join(", ", user.Roles)
+                                                                                          : "No roles")
+                </td>
+                <td class="text-center">
+                    @if (!user.Roles.Contains("Administrator"))
+                    {
+                        if (user.Roles.Contains("Moderator"))
+                        {
+                            <a class="btn btn-danger btn-sm"
+                               asp-area="Admin"
+                               asp-controller="Users" asp-action="RemoveFromRoleModerator"
+                               asp-all-route-data="@(new Dictionary<string, string> {{"id", @user.Id}})">
+                                Remove from Moderator
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-warning btn-sm"
+                               asp-area="Admin"
+                               asp-controller="Users" asp-action="AddToRoleModerator"
+                               asp-all-route-data="@(new Dictionary<string, string> {{"id", @user.Id}})">
+                                Add to Moderator
+                            </a>
+                        }
+
+                        <a class="btn btn-danger btn-sm"
+                           asp-area="Admin"
+                           asp-controller="Users" asp-action="Delete"
+                           asp-all-route-data="@(new Dictionary<string, string> {{"id", @user.Id}})">
+                            Delete User
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
